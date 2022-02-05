@@ -1,3 +1,5 @@
+const YAML = require('yaml');
+
 module.exports = {
   default: function(context) {
     return {
@@ -8,10 +10,14 @@ module.exports = {
         markdownIt.renderer.rules.fence = function(tokens, idx, options, env, self) {
           const token = tokens[idx];
           if (token.info !== 'life') return defaultRender(tokens, idx, options, env, self);
-          const contentHtml = markdownIt.utils.escapeHtml(token.content);
+          try {
+            var contentHtml = JSON.stringify(YAML.parse(markdownIt.utils.escapeHtml(token.content)));
+          } catch (e) {
+            var contentHtml = {};
+          }
           return `
             <div class="joplin-editable">
-              <pre class="life-calendar">${contentHtml}</pre>
+              <div class="life-calendar">${contentHtml}</div>
             </div>
           `;
         };
