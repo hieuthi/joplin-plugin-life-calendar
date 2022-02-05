@@ -2,12 +2,12 @@
 
 This plugin renders yalm-based fenced code into a Life Calendar [inspired by Tim Urban's aarticle "Your Life in Weeks"](https://waitbutwhy.com/2014/05/life-weeks.html).
 
-![screenshot](https://raw.githubusercontent.com/hieuthi/joplin-plugin-life-calendar/main/docs/life-calendar-v1.0.0-screenshot.jpg)
+![screenshot](https://raw.githubusercontent.com/hieuthi/joplin-plugin-life-calendar/main/docs/life-calendar-v1.0.0-screenshot.png)
 
 The purpose of Life Calendar is to document the events in your life but there is nothing stopping you from using it for other purposes such as project management. The yaml-based syntax make it easy to export your data to other format so your time documenting will not be wasted.
 
 ## Usage
-You need to create a fenced code with `life` as language to render the calendar. The example below should demostrate all the supported features. It is recommended to intend the events block with spaces as yalm parser is quite sensitive. You may have a parsing problem when typing with Joplin as it use tab for intending.
+You need to create a fenced code with `life` as language to render the calendar. The example below should demostrate all the supported features. It is recommended to intend the events block with spaces as yalm parser is quite sensitive. You may encounter parsing problems when typing with Joplin as it use tab for intending.
 
 `````markdown
 # 📆 Life Calendar
