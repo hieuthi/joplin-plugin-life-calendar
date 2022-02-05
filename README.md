@@ -1,24 +1,63 @@
-# Joplin Plugin
+# Life Calendar
 
-This is a template to create a new Joplin plugin.
+This plugin renders yalm-based fenced code into a Life Calendar [inspired by Tim Urban's aarticle "Your Life in Weeks"](https://waitbutwhy.com/2014/05/life-weeks.html).
 
-The main two files you will want to look at are:
+![screenshot](https://raw.githubusercontent.com/hieuthi/joplin-plugin-life-calendar/main/docs/life-calendar-v1.0.0-screenshot.jpg)
 
-- `/src/index.ts`, which contains the entry point for the plugin source code.
-- `/src/manifest.json`, which is the plugin manifest. It contains information such as the plugin a name, version, etc.
+The purpose of Life Calendar is to document the events in your life but there is nothing stopping you from using it for other purposes such as project management. The yaml-based syntax make it easy to export your data to other format so your time documenting will not be wasted.
 
-## Building the plugin
+## Usage
+You need to create a fenced code with `life` as language to render the calendar. The example below should demostrate all the supported features. It is recommended to intend the events block with spaces as yalm parser is quite sensitive. You may have a parsing problem when typing with Joplin as it use tab for intending.
 
-The plugin is built using Webpack, which creates the compiled code in `/dist`. A JPL archive will also be created at the root, which can use to distribute the plugin.
+`````markdown
+# 📆 Life Calendar
 
-To build the plugin, simply run `npm run dist`.
+- **Date of Birth**: 01/01/2020
 
-The project is setup to use TypeScript, although you can change the configuration to use plain JavaScript.
+```life
+dob: 2020-01-01
+# dod: 2026-01-01 # overwrite lifespan
+lifespan: 4
+ages: [1,2,3,4,5,6]
+events:
+  - date : 2021-06-12
+    title: Got a Gold Medal
+    icon : 🥇
+    backgroundColor: green
+  - date : 2021-06-10
+    title: Another event in the same week
+    color: yellow
+  - date : 2021-03-28
+    title: Random Event
+    icon : 🎤
+    color: black
+    backgroundColor: '#6495ED'
+  - date : 2021-01-03
+    title: Birthday Party
+    icon : 🎂
+    color: black
+    backgroundColor: hotpink
+  - date : 2020-03-19
+    title: First character used as icon
+    backgroundColor: orange
+    color: black
+  - date : 2020-03-27
+    title: Used explicit icon
+    icon : '<b>F</b>'
+    color: orange
+    backgroundColor: black
+  - date : 2020-01-01
+    title: Date of Birth
+    icon : 👶
+    backgroundColor: transparent
+```
+`````
 
-## Updating the plugin framework
+You can further customize the apperance using `userstyle.css`
 
-To update the plugin framework, run `npm run update`.
+## Acknowledgements
+- Tim Urban for popularizing the [Your Life in Weeks Concept](https://waitbutwhy.com/2014/05/life-weeks.html)
+- [Dylan N's Life Calendar Implementation](https://github.com/ngduc/life-calendar) which is a reference for this plugin.
 
-In general this command tries to do the right thing - in particular it's going to merge the changes in package.json and .gitignore instead of overwriting. It will also leave "/src" as well as README.md untouched.
-
-The file that may cause problem is "webpack.config.js" because it's going to be overwritten. For that reason, if you want to change it, consider creating a separate JavaScript file and include it in webpack.config.js. That way, when you update, you only have to restore the line that include your file.
+## License
+[MIT](https://raw.githubusercontent.com/hieuthi/joplin-plugin-life-calendar/main/LICENSE)
