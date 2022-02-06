@@ -19,9 +19,6 @@
   text-align: center;
   white-space: nowrap;
 }
-.life-calendar div.life-week:hover span {
-  box-shadow:inset 0px 0px 0px 1px rgb(247, 210, 110);
-}
 
 .life-calendar div.life-week.past span {
   background-color: #777;
@@ -33,6 +30,9 @@
 }
 .life-calendar div.life-week.future span {
   box-shadow:inset 0px 0px 0px 1px #777;
+}
+.life-calendar div.life-week:hover span {
+  box-shadow:inset 0px 0px 0px 1px rgb(247, 210, 110);
 }
 
 .life-calendar div.life-week div.info {

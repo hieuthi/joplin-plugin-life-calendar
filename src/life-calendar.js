@@ -28,7 +28,7 @@ function buildCalendars() {
     var calendar = calendars[i];
     try {
       var options = JSON.parse(calendar.textContent);
-      makeLifeCalendar(calendar, options);
+      setTimeout(makeLifeCalendar(calendar, options),60);
     } catch (e) {
       calendar.innerHTML = "Parsing Error";
       console.log("Error: " + e);
@@ -53,6 +53,8 @@ function makeLifeCalendar(calendar, options) {
     dod = new Date(isoStringToDate(options["dod"]) || isoStringToDate("2070-01-01"));
   } else if (options["lifespan"]){
     dod = new Date(byear+options["lifespan"],bmonth,bdate);
+  } else {
+    dod = new Date(byear+80,bmonth,bdate);
   }
   const doda = new Date(dod.getTime() + (7-dod.getDay())*8.64e+7);
 
@@ -125,6 +127,9 @@ function makeLifeCalendar(calendar, options) {
       var weekEvents = events[weekIdx];
       var event = weekEvents[0]; 
       weekspan.innerHTML = event["icon"] || event["title"][0];
+      if (event["className"]){
+        weekspan.className = event["className"];
+      }
       if (event["color"]){
         weekspan.style.color = event["color"];
       }
@@ -136,6 +141,9 @@ function makeLifeCalendar(calendar, options) {
         var info = document.createElement("div");
         info.className = 'info-event';
         info.innerHTML = `<b>${event["date"]}</b> (${event["icon"] || event["title"][0]}) ${event["title"]}`
+        if (event["className"]){
+          info.className = info.className + " " + event["className"];
+        }
         if (event["color"]){
           info.style.color = event["color"];
         }
