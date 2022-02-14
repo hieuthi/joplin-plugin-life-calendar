@@ -11,8 +11,10 @@ if (/WebKit/i.test(navigator.userAgent)) { // sniff
 // Helpers functions
 function dateToIsoString(date){
   var month = (date.getMonth()+1).toString();
+  var day   = (date.getDate()+1).toString()
   month = month.length == 1 ? '0' + month : month;
-  return `${date.getFullYear()}-${month}-${date.getDate()}`
+  day   = day.length == 1 ? '0' + day : day;
+  return `${date.getFullYear()}-${month}-${day}`
 }
 
 function isoStringToDate(iso) {
@@ -89,6 +91,23 @@ function makeLifeCalendar(calendar, options) {
     })
   }
 
+  // Prepare periods
+  const periods = []
+  if (options["periods"]){
+    options["periods"].forEach(item => {
+      var sDate = new Date(item["start"]);
+      var eDate = new Date(item["end"]);
+      if (sDate && eDate){
+        var title = item["title"];
+        var color = item["color"] || null;
+        var backgroundColor = item["backgroundColor"] || null;
+        periods.push({"start": sDate, "end": eDate,
+          "sIso": dateToIsoString(sDate), "eIso": dateToIsoString(eDate),
+          "title": title, "color": color, "backgroundColor": backgroundColor})
+      }
+    })
+  }
+
   const children = [];
 
   const now     = new Date();
@@ -140,7 +159,7 @@ function makeLifeCalendar(calendar, options) {
       weekEvents.forEach(event => {
         var info = document.createElement("div");
         info.className = 'info-event';
-        info.innerHTML = `<b>${event["date"]}</b> (${event["icon"] || event["title"][0]}) ${event["title"]}`
+        info.innerHTML = `<b>${event["date"]}</b> [${event["icon"] || event["title"][0]}] ${event["title"]}`
         if (event["className"]){
           info.className = info.className + " " + event["className"];
         }
@@ -153,6 +172,27 @@ function makeLifeCalendar(calendar, options) {
         weekinfo.appendChild(info);
       })
     }
+
+    // Periods
+    var bgcolor = null;
+    periods.forEach(period => {
+      if ( (dateStart>=period["start"] && dateStart<period["end"]) ||
+            (dateEnd>=period["start"] && dateEnd<period["end"]) ){
+        var info = document.createElement("div");
+        info.className = 'info-period';
+        info.innerHTML = `<b>${period["sIso"]}</b> <b>${period["eIso"]}</b> ${period["title"]}`;
+        if (period["color"]){
+          info.style.color = period["color"];
+        }
+        if (period["backgroundColor"]){
+          info.style.backgroundColor = period["backgroundColor"];
+          bgcolor = period["backgroundColor"];
+        }
+        weekinfo.appendChild(info);
+      }
+    })
+
+    if (bgcolor){ week.style.backgroundColor = bgcolor; }
 
     week.appendChild(weekspan);
     week.appendChild(weekinfo);

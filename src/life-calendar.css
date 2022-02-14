@@ -4,7 +4,8 @@
 }
 .life-calendar div.life-week {
   display: inline-block;
-  margin-right: 2px;
+  padding: 1px;
+  line-height: 12px;
   margin-bottom: 2px;
 }
 .life-calendar div.life-week span {
@@ -14,14 +15,13 @@
   overflow: hidden;
   padding: 1px;
   font-size: 10px;
-  line-height: 12px;
   border-radius: 4px;
   text-align: center;
   white-space: nowrap;
 }
 
 .life-calendar div.life-week.past span {
-  background-color: #777;
+  background-color: rgb(170,170,170,0.5);
   color: #fff;
 }
 .life-calendar div.life-week.present span {
@@ -29,7 +29,7 @@
   color: #000;
 }
 .life-calendar div.life-week.future span {
-  box-shadow:inset 0px 0px 0px 1px #777;
+  box-shadow:inset 0px 0px 0px 1px rgb(170,170,170,0.25);
 }
 .life-calendar div.life-week:hover span {
   box-shadow:inset 0px 0px 0px 1px rgb(247, 210, 110);
@@ -37,7 +37,7 @@
 
 .life-calendar div.life-week div.info {
   visibility: hidden;
-  width: 120px;
+  width: 140px;
   background-color: #555;
   padding: 5px 0;
   border-radius: 4px;
@@ -65,6 +65,10 @@ div.info div {
 }
 div.info div.info-meta {
   color: #999;
-  font-size: 8px;
-  line-height: 8px;
+  font-size: 9px;
+  line-height: 9px;
+}
+div.info div.info-period {
+  font-size: 9px;
+  line-height: 9px;
 }
