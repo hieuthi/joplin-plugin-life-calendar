@@ -1,8 +1,8 @@
 # Life Calendar
 
-This plugin renders yaml-based fenced code into a Life Calendar [inspired by Tim Urban's aarticle "Your Life in Weeks"](https://waitbutwhy.com/2014/05/life-weeks.html).
+This plugin renders yaml-based fenced code into a Life Calendar inspired by Tim Urban's article "Your Life in Weeks".
 
-![screenshot](https://raw.githubusercontent.com/hieuthi/joplin-plugin-life-calendar/main/docs/life-calendar-v1.0.0-screenshot.png)
+![screenshot](https://raw.githubusercontent.com/hieuthi/joplin-plugin-life-calendar/main/docs/life-calendar-v1.2.0-screenshot.png)
 
 The purpose of Life Calendar is documenting the events in your life but there is nothing stopping you from using it for other purposes such as project management. The yaml-based syntax make it easy to export data to other format.
 
@@ -11,11 +11,19 @@ You need to create a fenced code with `life` as language to render the calendar 
 ```
   - date : yyyy-mm-dd    # (required)
     title:               # (required) event title
-    icon :               # (optional) event icon, use first character of title if icon is null
+    icon :               # (optional) event icon, use 1st character of title if icon is null
     className:           # (optional) css class of the event (color, background-color, etc.)
     color:               # (optional) overwrite color
     backgroundColor:     # (optional) overwrite background-color
 
+```
+This plugin also support periods which is a span of time instead of a point in time. The template for period is as follow:
+```
+  - start : yyyy-mm-dd   # (required)
+    end : yyyy-mm-dd     # (required)
+    title:               # (required) event title
+    color:               # (optional) overwrite color
+    backgroundColor:     # (optional) overwrite background-color
 ```
 
 The example below should demostrate all the supported features. It is recommended to intend the events block with spaces as yalm parser is quite sensitive. You may encounter parsing problems when typing with Joplin as it use tab for intending.
@@ -52,14 +60,14 @@ events:
     icon : 🎂
     color: black
     backgroundColor: hotpink
-  - date : 2020-03-19
-    title: First character used as icon
-    backgroundColor: orange
-    color: black
   - date : 2020-08-19
     title: Obtain Magician License
     icon : 🎩
     className: education
+  - date : 2020-03-19
+    title: First character used as icon
+    backgroundColor: orange
+    color: black
   - date : 2020-03-27
     title: Used explicit icon
     icon : '<b>F</b>'
@@ -69,6 +77,17 @@ events:
     title: Date of Birth
     icon : 👶
     backgroundColor: transparent
+periods:
+  - start: 2020-12-15
+    end: 2022-01-01
+    title: High school
+    color: black
+    backgroundColor: lightblue
+  - start: 2020-02-01
+    end: 2020-12-15
+    title: Preschool
+    backgroundColor: yellow
+    color: black
 ```
 
 `````
