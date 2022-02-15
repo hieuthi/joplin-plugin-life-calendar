@@ -1,7 +1,7 @@
 # Changelog
 
 
-## [v1.2.0] - 2022-02-14
+## [v1.2.1] - 2022-02-14
 ### Changed
 - Change theme
 
@@ -19,6 +19,6 @@
 Initial release, fully functional
 
 
-[v1.2.0]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.2.0...v1.1.0
+[v1.2.1]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.2.1...v1.1.0
 [v1.1.0]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.1.0...v1.0.0
 [v1.0.0]: https://github.com/hieuthi/joplin-plugin-life-calendar/releases/tag/v1.0.0

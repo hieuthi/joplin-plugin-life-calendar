@@ -19,8 +19,8 @@ You need to create a fenced code with `life` as language to render the calendar 
 ```
 This plugin also support periods which is a span of time instead of a point in time. The template for period is as follow:
 ```
-  - start : yyyy-mm-dd   # (required)
-    end : yyyy-mm-dd     # (required)
+  - start: yyyy-mm-dd    # (required)
+    end  : yyyy-mm-dd    # (required)
     title:               # (required) event title
     color:               # (optional) overwrite color
     backgroundColor:     # (optional) overwrite background-color
@@ -93,6 +93,17 @@ periods:
 `````
 
 You can further customize the apperance using `userstyle.css`
+
+## Tips & Tricks
+### Ages template
+Some pre-prepared templates for `ages` option, just copy it to your note instead of typing yourself:
+```
+ages: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
+ages: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98]
+ages: [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99]
+ages: [4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96]
+ages: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95]
+```
 
 ## Acknowledgements
 - Tim Urban for popularizing the [Your Life in Weeks Concept](https://waitbutwhy.com/2014/05/life-weeks.html)
