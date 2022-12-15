@@ -1,5 +1,7 @@
 document.addEventListener('joplin-noteDidUpdate', buildCalendars );
 
+var _life_pin = null;
+
 if (/WebKit/i.test(navigator.userAgent)) { // sniff
     var _timer_life = setInterval(function() {
         if (/loaded|complete/.test(document.readyState)) {
@@ -24,6 +26,7 @@ function isoStringToDate(iso) {
 
 function buildCalendars() {
   if (_timer_life) clearInterval(_timer_life);
+  _life_pin = null;
 
   const calendars = document.getElementsByClassName('life-calendar');
   for (var i=0; i<calendars.length; i++){
@@ -38,8 +41,69 @@ function buildCalendars() {
   }
 }
 
+function renderInfo(infoElement, info) {
+  var elem = document.createElement("div");
+  elem.innerHTML = info["header"];
+  elem.className = 'info-meta';
+  infoElement.appendChild(elem);
+
+  info["events"].forEach(event => {
+    var elem = document.createElement("div");
+    elem.className = 'info-event';
+    elem.innerHTML = `<b>${event["date"]}</b> <span class="icon">${event["icon"] || event["title"][0]}</span> ${event["title"]}`
+    if (event["className"]){ elem.className = elem.className + " " + event["className"]; }
+    if (event["color"]){ elem.style.color = event["color"]; }
+    if (event["backgroundColor"]){ elem.style.backgroundColor = event["backgroundColor"]; }
+    infoElement.appendChild(elem);
+  });
+  info["periods"].forEach(period => {
+    var elem = document.createElement("div");
+    elem.className = 'info-period';
+    elem.innerHTML = `<b>${period["sIso"]}</b> <b>${period["eIso"]}</b> ${period["title"]}`;
+    if (period["color"]){ elem.style.color = period["color"]; }
+    if (period["backgroundColor"]){ elem.style.backgroundColor = period["backgroundColor"]; }
+    infoElement.appendChild(elem);
+  })
+}
+
+function itemMouseOut() {
+  var firstInfo  = this.parentElement.parentElement.firstChild;
+  var secondInfo = firstInfo.nextSibling;
+  secondInfo.classList.remove('visible')
+  if (_life_pin !== null){
+    firstInfo.classList.add('visible')
+  }
+}
+function itemMouseOver() {
+  var firstInfo  = this.parentElement.parentElement.firstChild;
+  var secondInfo = firstInfo.nextSibling;
+  secondInfo.innerHTML = '';
+  secondInfo.classList.add('visible')
+  renderInfo(secondInfo, this.infoObj);
+  if (_life_pin !== null){
+    firstInfo.classList.remove('visible');
+  }
+}
+function itemClick() {
+  var firstInfo  = this.parentElement.parentElement.firstChild;
+  if (_life_pin == null){
+    _life_pin = this.infoObj;
+    firstInfo.innerHTML = '';
+    firstInfo.classList.add('visible')
+    renderInfo(firstInfo, this.infoObj);
+  } else {
+    firstInfo.classList.remove('visible');
+    _life_pin = null;
+  }
+}
+
 function makeLifeCalendar(calendar, options) {
   calendar.innerHTML = ''; // Clear element content
+
+  var firstInfo = document.createElement("div");
+  firstInfo.className = 'info';
+  calendar.appendChild(firstInfo);
+  calendar.appendChild(firstInfo.cloneNode());
 
   // Calculate time period
   const MSWEEK = 8.64e+7 * 7;
@@ -118,8 +182,7 @@ function makeLifeCalendar(calendar, options) {
 
     var week     = document.createElement("div");
     var weekspan = document.createElement("span");
-    var weekinfo = document.createElement("div");
-    weekinfo.className = "info"
+
 
     var dateStart = new Date(doba.getTime() + i*MSWEEK);
     var dateEnd   = new Date(doba.getTime() + (i+1)*MSWEEK - 1000)
@@ -135,42 +198,18 @@ function makeLifeCalendar(calendar, options) {
       week.className = 'life-week present';
     }
 
-    // Prepare info meta
-    var info = document.createElement("div");
-    info.innerHTML = `<b>W${i}</b>, from ${dateToIsoString(dateStart)} to ${dateToIsoString(dateEnd)}, Age: ${age}`;
-    info.className = 'info-meta';
-    weekinfo.appendChild(info);
-
+    var info = {"events" : [],
+                "periods": [],
+                "header" : `<b>W${i.toString().padStart(4,'0')}</b> | ${dateToIsoString(dateStart)}~${dateToIsoString(dateEnd)} | Age: ${age}`};
     // Prepare info events
     if (events[weekIdx]){
       var weekEvents = events[weekIdx];
       var event = weekEvents[0]; 
       weekspan.innerHTML = event["icon"] || event["title"][0];
-      if (event["className"]){
-        weekspan.className = event["className"];
-      }
-      if (event["color"]){
-        weekspan.style.color = event["color"];
-      }
-      if (event["backgroundColor"]){
-        weekspan.style.backgroundColor = event["backgroundColor"];
-      }
-
-      weekEvents.forEach(event => {
-        var info = document.createElement("div");
-        info.className = 'info-event';
-        info.innerHTML = `<b>${event["date"]}</b> [${event["icon"] || event["title"][0]}] ${event["title"]}`
-        if (event["className"]){
-          info.className = info.className + " " + event["className"];
-        }
-        if (event["color"]){
-          info.style.color = event["color"];
-        }
-        if (event["backgroundColor"]){
-          info.style.backgroundColor = event["backgroundColor"];
-        }
-        weekinfo.appendChild(info);
-      })
+      if (event["className"]){ weekspan.className = event["className"]; }
+      if (event["color"]){ weekspan.style.color = event["color"]; }
+      if (event["backgroundColor"]){ weekspan.style.backgroundColor = event["backgroundColor"]; }
+      info["events"] = weekEvents;
     }
 
     // Periods
@@ -178,25 +217,20 @@ function makeLifeCalendar(calendar, options) {
     periods.forEach(period => {
       if ( (dateStart>=period["start"] && dateStart<period["end"]) ||
             (dateEnd>=period["start"] && dateEnd<period["end"]) ){
-        var info = document.createElement("div");
-        info.className = 'info-period';
-        info.innerHTML = `<b>${period["sIso"]}</b> <b>${period["eIso"]}</b> ${period["title"]}`;
-        if (period["color"]){
-          info.style.color = period["color"];
-        }
+        info["periods"].push(period);
         if (period["backgroundColor"]){
-          info.style.backgroundColor = period["backgroundColor"];
           bgcolor = period["backgroundColor"];
         }
-        weekinfo.appendChild(info);
       }
     })
-
     if (bgcolor){ week.style.backgroundColor = bgcolor; }
 
-    week.appendChild(weekspan);
-    week.appendChild(weekinfo);
+    weekspan.infoObj = info;
+    weekspan.onmouseover = itemMouseOver;
+    weekspan.onmouseout  = itemMouseOut;
+    weekspan.onclick     = itemClick;
 
+    week.appendChild(weekspan);
     calendar.appendChild(week);
   }
 }

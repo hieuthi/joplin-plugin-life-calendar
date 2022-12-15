@@ -35,15 +35,17 @@
   box-shadow:inset 0px 0px 0px 1px rgb(247, 210, 110);
 }
 
-.life-calendar div.life-week div.info {
+.life-calendar div.info {
   visibility: hidden;
-  width: 140px;
+  width: 200px;
+  max-height: 40%;
   background-color: #555;
   padding: 5px 0;
   border-radius: 4px;
   font-size: 12px;
   line-height: 12px;
   color: #fefefe;
+  overflow-y: overlay;
 
   /* Position the tooltip text */
   position: fixed;
@@ -55,13 +57,18 @@
   opacity: 0;
   transition: opacity 0.3s;
 }
-.life-calendar div.life-week:hover div.info {
+.life-calendar div.info.visible{
   visibility: visible;
   opacity: 1;
 }
 
 div.info div {
   padding: 4px;
+}
+div.info .icon {
+  min-width: 14px;
+  text-align: center;
+  display: inline-block;
 }
 div.info div.info-meta {
   color: #999;
