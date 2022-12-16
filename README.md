@@ -28,6 +28,8 @@ This plugin also support periods which is a span of time instead of a point in t
 
 The example below should demostrate all the supported features. It is recommended to intend the events block with spaces as yalm parser is quite sensitive. You may encounter parsing problems when typing with Joplin as it use tab for intending.
 
+From v1.3.0 forward, this plugin also support day-based, month-based, and year-based calendar beside week-based by writting down the desired type `type: month`. Moreover you can click on the a square to pin down the details window so you can read. Click again at any square to unpin it.
+
 `````markdown
 # 📆 Life Calendar
 
@@ -38,11 +40,13 @@ The example below should demostrate all the supported features. It is recommende
 - **Date of Birth**: 01/01/2020
 
 ```life
-dob: 2020-01-01
-# dod: 2026-01-01 # overwrite lifespan
-lifespan: 4
+type: week        # [ day, week, month, year ]
+dob : 2020-01-01  # alias=startDate
+lifespan: 4       # alias=duration
+# dod: 2026-01-01 # alias=endDate
 ages: [1,2,3,4,5,6]
 events:
+  - { date: 2022-04-19, title: Inline Event, icon: 🍿, backgroundColor: navy, color: white }
   - date : 2021-06-12
     title: Got a Gold Medal
     icon : 🥇
