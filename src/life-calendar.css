@@ -2,13 +2,13 @@
   flex-wrap: wrap;
   line-height: 1em;
 }
-.life-calendar div.life-week {
+.life-calendar div.life-item {
   display: inline-block;
   padding: 1px;
   line-height: 12px;
   margin-bottom: 2px;
 }
-.life-calendar div.life-week span {
+.life-calendar div.life-item span {
   display: inline-block;
   width: 12px;
   height: 12px;
@@ -20,18 +20,18 @@
   white-space: nowrap;
 }
 
-.life-calendar div.life-week.past span {
+.life-calendar div.life-item.past span {
   background-color: rgb(170,170,170,0.5);
   color: #fff;
 }
-.life-calendar div.life-week.present span {
+.life-calendar div.life-item.present span {
   background-color: rgb(247, 210, 110);
   color: #000;
 }
-.life-calendar div.life-week.future span {
+.life-calendar div.life-item.future span {
   box-shadow:inset 0px 0px 0px 1px rgb(170,170,170,0.25);
 }
-.life-calendar div.life-week:hover span {
+.life-calendar div.life-item:hover span {
   box-shadow:inset 0px 0px 0px 1px rgb(247, 210, 110);
 }
 

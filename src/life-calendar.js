@@ -20,6 +20,7 @@ function dateToIsoString(date){
 }
 
 function isoStringToDate(iso) {
+  if (iso==null) { return null }
   var [yyyy, mm, dd] = iso.split('-');
   return new Date(yyyy, mm - 1, dd); 
 }
@@ -97,6 +98,64 @@ function itemClick() {
   }
 }
 
+const MSDAY  = 8.64e+7;
+const MSWEEK = MSDAY * 7;
+function getEventIndex(ctype, startDate, eventDate) {
+  var idx = 0;
+  switch (ctype) {
+    case "day":
+      idx = Math.floor((eventDate.getTime()-startDate.getTime()) / MSDAY);
+      break;
+    case "week":
+      idx = Math.floor((eventDate.getTime()-startDate.getTime()) / MSWEEK);
+      break;
+    case "month":
+      idx = (eventDate.getFullYear() - startDate.getFullYear()) * 12 + (eventDate.getMonth() - startDate.getMonth());
+      break;
+    case "year":
+      idx = eventDate.getFullYear() - startDate.getFullYear();
+      break;
+  }
+  return idx;
+}
+function getEventTime(ctype, startDate, index) {
+  var date = startDate;
+  switch (ctype) {
+    case "day":
+      date = new Date(startDate.getTime() + index*MSDAY);
+      break;
+    case "week":
+      date = new Date(startDate.getTime() + index*MSWEEK);
+      break;
+    case "month":
+      var month = startDate.getMonth() + index;
+      date = new Date(startDate.getFullYear() + Math.floor(month/12), month % 12, startDate.getDate());
+      break;
+    case "year":
+      date = new Date(startDate.getFullYear() + index, startDate.getMonth(), startDate.getDate());
+      break;
+  }
+  return date;
+}
+
+function floorEventDate(ctype, date) {
+  var ret = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  switch (ctype) {
+    case "day":
+      break;
+    case "week":
+      ret = new Date(ret.getTime() - ret.getDay()*MSDAY)
+      break;
+    case "month":
+      ret = new Date(ret.getFullYear(), ret.getMonth(), 1);
+      break;
+    case "year":
+      ret = new Date(ret.getFullYear(), 0, 1);
+      break;
+  }
+  return ret;
+}
+
 function makeLifeCalendar(calendar, options) {
   calendar.innerHTML = ''; // Clear element content
 
@@ -105,27 +164,40 @@ function makeLifeCalendar(calendar, options) {
   calendar.appendChild(firstInfo);
   calendar.appendChild(firstInfo.cloneNode());
 
-  // Calculate time period
-  const MSWEEK = 8.64e+7 * 7;
-
-  const dob  = new Date(isoStringToDate(options["dob"]) || isoStringToDate("1970-01-01"));
-  const doba = new Date(dob.getTime() - dob.getDay()*8.64e+7);
-  const byear  = dob.getFullYear();
-  const bmonth = dob.getMonth();
-  const bdate  = dob.getDate();
-
-  var dod = null;
-  if (options["dod"]) {
-    dod = new Date(isoStringToDate(options["dod"]) || isoStringToDate("2070-01-01"));
-  } else if (options["lifespan"]){
-    dod = new Date(byear+options["lifespan"],bmonth,bdate);
-  } else {
-    dod = new Date(byear+80,bmonth,bdate);
+  var ctype = options["type"] || "week";
+  ctype = !["day", "week", "month", "year"].includes(ctype) ? "week" : ctype;
+  var itype = "W"
+  switch (ctype) {
+    case "day"  : itype = "D"; break;
+    case "week" : itype = "W"; break;
+    case "month": itype = "M"; break;
+    case "year" : itype = "Y"; break;
   }
-  const doda = new Date(dod.getTime() + (7-dod.getDay())*8.64e+7);
+
+  // Calculate time period
+
+  var dob  = options["dob"]  ? isoStringToDate(options["dob"])       : isoStringToDate("1970-01-01");
+  dob = options["startDate"] ? isoStringToDate(options["startDate"]) : dob;
+  var [ byear, bmonth, bdate ] = [ dob.getFullYear(), dob.getMonth(), dob.getDate() ];
+  var dodm = getEventTime(ctype, dob, 9999);
+
+  var dod = options["lifespan"] ? new Date(byear+options["lifespan"],bmonth,bdate) : new Date(byear+5,bmonth,bdate);
+  dod = options["duration"]     ? new Date(byear+options["duration"],bmonth,bdate) : dod;
+  dod = options["dod"]          ? isoStringToDate(options["dod"])                  : dod;
+  dod = options["endDate"]      ? isoStringToDate(options["endDate"])              : dod;
+  dod = dod > dodm ? dodm : dod;
+
+  const doba = floorEventDate(ctype, dob);
+  const doda = floorEventDate(ctype, dod);
+  const now  = new Date();
 
   // Prepare ages
-  const events = {}
+  options["events"] = options["events"] || [];
+  options["events"].push({
+    "date" : dateToIsoString(now),
+    "title": `Today`,
+    "icon" : `>`
+  });
   if (options["ages"]) {
     options["ages"].forEach(age => {
       var birthday = null;
@@ -134,33 +206,35 @@ function makeLifeCalendar(calendar, options) {
       } else {
         birthday = new Date(byear+age,bmonth,bdate);
       }
-
-      var weekIdx = Math.floor((birthday.getTime()-doba.getTime()) / MSWEEK);
-      events[weekIdx] = [{ "date" : dateToIsoString(birthday),
-                           "title": `turning ${age}`,
-                           "icon" : `${age}` }]
+      options["events"].push({
+        "date" : dateToIsoString(birthday),
+        "title": `Turning ${age}`,
+        "icon" : `${age}` 
+      })
     })
   }
 
+  const events = {}
   // Prepare events
   if (options["events"]) {
+    options["events"].sort( (a,b) => {return a["date"] > b["date"] ? -1 : 1; })
     options["events"].forEach(item => {
-      var edate = new Date(item["date"]);
-      var weekIdx = Math.floor((edate.getTime()-doba.getTime()) / MSWEEK);
-      if (events[weekIdx]){
-        events[weekIdx].push(item);
+      var edate = isoStringToDate(item["date"]);
+      var idx   = getEventIndex(ctype, doba, edate)
+      if (events[idx]){
+        events[idx].push(item);
       } else {
-        events[weekIdx] = [item];
+        events[idx] = [item];
       }
     })
   }
-
   // Prepare periods
   const periods = []
   if (options["periods"]){
+    options["periods"].sort( (a,b) => {return a["start"] > b["start"] ? -1 : 1})
     options["periods"].forEach(item => {
-      var sDate = new Date(item["start"]);
-      var eDate = new Date(item["end"]);
+      var sDate = isoStringToDate(item["start"]);
+      var eDate = isoStringToDate(item["end"]);
       if (sDate && eDate){
         var title = item["title"];
         var color = item["color"] || null;
@@ -174,63 +248,54 @@ function makeLifeCalendar(calendar, options) {
 
   const children = [];
 
-  const now     = new Date();
-  const curweek = Math.floor((now.getTime()-doba.getTime()) / MSWEEK);
-  const nweek   = Math.ceil((doda.getTime()-doba.getTime()) / MSWEEK);
-  for (var i=0; i<nweek; i++){
-    var weekIdx = i;
-
-    var week     = document.createElement("div");
-    var weekspan = document.createElement("span");
-
-
-    var dateStart = new Date(doba.getTime() + i*MSWEEK);
-    var dateEnd   = new Date(doba.getTime() + (i+1)*MSWEEK - 1000)
+  const nowIdx  = getEventIndex(ctype, doba, now);
+  const nItems  = getEventIndex(ctype, doba, doda) + 1;
+  for (var i=0; i<nItems; i++){
+    var dateStart = getEventTime(ctype, doba, i);
+    var dateEnd   = getEventTime(ctype, doba, i+1);
 
     var age = Math.abs((new Date(dateEnd.getTime() - dob.getTime())).getUTCFullYear()-1970);
 
-    // Past, Present, and Future
-    if (i < curweek ) {
-      week.className = 'life-week past';
-    } else if ( i> curweek) {
-      week.className = 'life-week future';
-    } else {
-      week.className = 'life-week present';
-    }
 
-    var info = {"events" : [],
+    var info = {"events" : events[i] || [],
                 "periods": [],
-                "header" : `<b>W${i.toString().padStart(4,'0')}</b> | ${dateToIsoString(dateStart)}~${dateToIsoString(dateEnd)} | Age: ${age}`};
+                "header" : `<b>${itype}${i.toString().padStart(4,'0')}</b> | ${dateToIsoString(dateStart)}~${dateToIsoString(dateEnd)} | Age: ${age}`};
+
+    var item     = document.createElement("div");
+    var itemspan = document.createElement("span");
+    // Past, Present, and Future
+    if ( i < nowIdx ) {
+      item.className = 'life-item past';
+    } else if ( i == nowIdx) {
+      item.className = 'life-item present';
+    } else {
+      item.className = 'life-item future';
+    }
     // Prepare info events
-    if (events[weekIdx]){
-      var weekEvents = events[weekIdx];
-      var event = weekEvents[0]; 
-      weekspan.innerHTML = event["icon"] || event["title"][0];
-      if (event["className"]){ weekspan.className = event["className"]; }
-      if (event["color"]){ weekspan.style.color = event["color"]; }
-      if (event["backgroundColor"]){ weekspan.style.backgroundColor = event["backgroundColor"]; }
-      info["events"] = weekEvents;
+    if (events[i]){
+      var event = events[i][0]; 
+      itemspan.innerHTML = event["icon"] || event["title"][0];
+      if (event["className"]){ itemspan.className = event["className"]; }
+      if (event["color"]){ itemspan.style.color = event["color"]; }
+      if (event["backgroundColor"]){ itemspan.style.backgroundColor = event["backgroundColor"]; }
     }
 
     // Periods
     var bgcolor = null;
     periods.forEach(period => {
-      if ( (dateStart>=period["start"] && dateStart<period["end"]) ||
-            (dateEnd>=period["start"] && dateEnd<period["end"]) ){
+      if ( !(dateEnd<=period["start"] || dateStart>=period["end"]) ) {
         info["periods"].push(period);
-        if (period["backgroundColor"]){
-          bgcolor = period["backgroundColor"];
-        }
+        if (period["backgroundColor"] && bgcolor===null){ bgcolor = period["backgroundColor"]; }
       }
-    })
-    if (bgcolor){ week.style.backgroundColor = bgcolor; }
+    });
+    if (bgcolor){ item.style.backgroundColor = bgcolor; }
 
-    weekspan.infoObj = info;
-    weekspan.onmouseover = itemMouseOver;
-    weekspan.onmouseout  = itemMouseOut;
-    weekspan.onclick     = itemClick;
+    itemspan.infoObj = info;
+    itemspan.onmouseover = itemMouseOver;
+    itemspan.onmouseout  = itemMouseOut;
+    itemspan.onclick     = itemClick;
 
-    week.appendChild(weekspan);
-    calendar.appendChild(week);
+    item.appendChild(itemspan);
+    calendar.appendChild(item);
   }
 }
