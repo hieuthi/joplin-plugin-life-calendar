@@ -8,5 +8,10 @@ joplin.plugins.register({
 			'lifeMdRule',
 			'./lifeMdRule.js'
 		);
+		await joplin.contentScripts.register(
+			ContentScriptType.CodeMirrorPlugin,
+			'lifeMdCtrl',
+			'./lifeMdCtrl.js'
+		);
 	},
 });
