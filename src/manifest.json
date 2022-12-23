@@ -2,7 +2,7 @@
 	"manifest_version": 1,
 	"id": "com.hieuthi.joplin.life-calendar",
 	"app_min_version": "2.2",
-	"version": "1.3.0",
+	"version": "1.4.0",
 	"name": "Life Calendar",
 	"description": "Life Calendar Plugin for Joplin",
 	"author": "Hieu-Thi Luong",

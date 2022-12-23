@@ -37,13 +37,13 @@
 
 .life-calendar div.info {
   visibility: hidden;
-  width: 200px;
+  width: 224px;
   max-height: 40%;
   background-color: #555;
   padding: 5px 0;
   border-radius: 4px;
   font-size: 12px;
-  line-height: 12px;
+  line-height: 1.2em;
   color: #fefefe;
   overflow-y: overlay;
 

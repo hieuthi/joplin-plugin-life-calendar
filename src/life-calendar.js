@@ -278,6 +278,11 @@ function makeLifeCalendar(calendar, options) {
     // Prepare info events
     if (events[i]){
       var event = events[i][0]; 
+      events[i].forEach(item => {
+        if ((item["z-index"] || 0) > (event["z-index"] ||0)) {
+          event = item;
+        }
+      })
       itemspan.innerHTML = event["icon"] || event["title"][0];
       if (event["className"]){ itemspan.className = event["className"]; }
       if (event["color"]){ itemspan.style.color = event["color"]; }

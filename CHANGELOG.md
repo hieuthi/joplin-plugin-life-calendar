@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.4.0] - 2022-12-23
+### Changed
+- Change period end date intepretation to inclusive 
+- Strengthen datetime handling
+- Change CSS
+
+### Added
+- Add className support for period
+- Add z-index (priority) support for event
+
+
 ## [v1.3.0] - 2022-12-16
 ### Changed
 - Adjust CSS
@@ -26,7 +37,7 @@
 ## [v1.0.0] - 2022-02-05
 Initial release, fully functional
 
-
+[v1.4.0]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.4.0...v1.3.0
 [v1.3.0]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.3.0...v1.2.1
 [v1.2.1]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.2.1...v1.1.0
 [v1.1.0]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.1.0...v1.0.0

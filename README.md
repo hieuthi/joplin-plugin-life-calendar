@@ -9,9 +9,10 @@ The purpose of Life Calendar is documenting the events in your life but there is
 ## Usage
 You need to create a fenced code with `life` as language to render the calendar then input the events using the the follow template:
 ```
-  - date : yyyy-mm-dd    # (required)
+  - date : yyyy-mm-dd    # (required) (interpretation DD/MM/YYYY 12:00 local time)
     title:               # (required) event title
     icon :               # (optional) event icon, use 1st character of title if icon is null
+    z-index:             # (optional) priority of the event, the one with the bigest value will be shown (default:0)
     className:           # (optional) css class of the event (color, background-color, etc.)
     color:               # (optional) overwrite color
     backgroundColor:     # (optional) overwrite background-color
@@ -19,9 +20,10 @@ You need to create a fenced code with `life` as language to render the calendar 
 ```
 This plugin also support periods which is a span of time instead of a point in time. The template for period is as follow:
 ```
-  - start: yyyy-mm-dd    # (required)
-    end  : yyyy-mm-dd    # (required)
+  - start: yyyy-mm-dd    # (required) (interpretation: DD/MM/YYYY 01:00 local time)
+    end  : yyyy-mm-dd    # (required) (interpretation: DD/MM/YYYY 23:00 local time)
     title:               # (required) event title
+    className:           # (optional) css class of the event (color, background-color, etc.)
     color:               # (optional) overwrite color
     backgroundColor:     # (optional) overwrite background-color
 ```
@@ -48,12 +50,13 @@ ages: [1,2,3,4,5,6]
 events:
   - { date: 2022-04-19, title: Inline Event, icon: 🍿, backgroundColor: navy, color: white }
   - date : 2021-06-12
+    title: Two events in the same week
+    color: yellow
+  - date : 2021-06-10
     title: Got a Gold Medal
     icon : 🥇
+    z-index: 1 # shown icon of this event in calendar board instead of the other one
     backgroundColor: green
-  - date : 2021-06-10
-    title: Another event in the same week
-    color: yellow
   - date : 2021-03-28
     title: Random Event
     icon : 🎤
@@ -82,6 +85,10 @@ events:
     icon : 👶
     backgroundColor: transparent
 periods:
+  - start: 2022-02-16
+    end  : 2022-08-16
+    title: Advanced Magic Course
+    className: education
   - start: 2020-12-15
     end: 2022-01-01
     title: High school
