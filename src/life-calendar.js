@@ -61,6 +61,7 @@ function renderInfo(infoElement, info) {
     var elem = document.createElement("div");
     elem.className = 'info-period';
     elem.innerHTML = `<b>${period["sIso"]}</b> <b>${period["eIso"]}</b> ${period["title"]}`;
+    if (period["className"]){ elem.className = elem.className + " " + period["className"]; }
     if (period["color"]){ elem.style.color = period["color"]; }
     if (period["backgroundColor"]){ elem.style.backgroundColor = period["backgroundColor"]; }
     infoElement.appendChild(elem);
@@ -98,7 +99,8 @@ function itemClick() {
   }
 }
 
-const MSDAY  = 8.64e+7;
+const MSHOUR = 3.6e+6;
+const MSDAY  = MSHOUR*24;
 const MSWEEK = MSDAY * 7;
 function getEventIndex(ctype, startDate, eventDate) {
   var idx = 0;
@@ -219,8 +221,8 @@ function makeLifeCalendar(calendar, options) {
   if (options["events"]) {
     options["events"].sort( (a,b) => {return a["date"] > b["date"] ? -1 : 1; })
     options["events"].forEach(item => {
-      var edate = isoStringToDate(item["date"]);
-      var idx   = getEventIndex(ctype, doba, edate)
+      var edate = new Date(isoStringToDate(item["date"]).getTime()+MSHOUR*12); // Daylight Saving Time
+      var idx   = getEventIndex(ctype, doba, edate);
       if (events[idx]){
         events[idx].push(item);
       } else {
@@ -233,15 +235,17 @@ function makeLifeCalendar(calendar, options) {
   if (options["periods"]){
     options["periods"].sort( (a,b) => {return a["start"] > b["start"] ? -1 : 1})
     options["periods"].forEach(item => {
-      var sDate = isoStringToDate(item["start"]);
-      var eDate = isoStringToDate(item["end"]);
+      var sDate = new Date(isoStringToDate(item["start"]).getTime() + MSHOUR + 1); // Daylight Saving Time
+      var eDate = new Date(isoStringToDate(item["end"]).getTime() + MSHOUR*23 - 1); // Daylight Saving Time
       if (sDate && eDate){
         var title = item["title"];
+        var className = item["className"] || null;
         var color = item["color"] || null;
         var backgroundColor = item["backgroundColor"] || null;
         periods.push({"start": sDate, "end": eDate,
           "sIso": dateToIsoString(sDate), "eIso": dateToIsoString(eDate),
-          "title": title, "color": color, "backgroundColor": backgroundColor})
+          "title": title, "color": color, "backgroundColor": backgroundColor, 
+          "className": className})
       }
     })
   }
@@ -251,10 +255,10 @@ function makeLifeCalendar(calendar, options) {
   const nowIdx  = getEventIndex(ctype, doba, now);
   const nItems  = getEventIndex(ctype, doba, doda) + 1;
   for (var i=0; i<nItems; i++){
-    var dateStart = getEventTime(ctype, doba, i);
-    var dateEnd   = getEventTime(ctype, doba, i+1);
+    var dateStart = new Date(getEventTime(ctype, doba, i).getTime() + MSHOUR + 1);     // Daylight Saving Time
+    var dateEnd   = new Date(getEventTime(ctype, doba, i+1).getTime() - MSHOUR - 1); // Daylight Saving Time
 
-    var age = Math.abs((new Date(dateEnd.getTime() - dob.getTime())).getUTCFullYear()-1970);
+    var age = Math.abs((new Date(dateEnd.getTime() - dob.getTime())).getUTCFullYear()-1970); //Daulight Saving Time
 
 
     var info = {"events" : events[i] || [],
@@ -282,13 +286,16 @@ function makeLifeCalendar(calendar, options) {
 
     // Periods
     var bgcolor = null;
+    var stclass = null;
     periods.forEach(period => {
       if ( !(dateEnd<=period["start"] || dateStart>=period["end"]) ) {
         info["periods"].push(period);
         if (period["backgroundColor"] && bgcolor===null){ bgcolor = period["backgroundColor"]; }
+        if (period["className"] && stclass===null){ stclass = period["className"]; }
       }
     });
     if (bgcolor){ item.style.backgroundColor = bgcolor; }
+    if (stclass){ item.classList.add(stclass) }
 
     itemspan.infoObj = info;
     itemspan.onmouseover = itemMouseOver;
