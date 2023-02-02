@@ -60,7 +60,9 @@ function renderInfo(infoElement, info) {
   info["periods"].forEach(period => {
     var elem = document.createElement("div");
     elem.className = 'info-period';
-    elem.innerHTML = `<b>${period["sIso"]}</b> <b>${period["eIso"]}</b> ${period["title"]}`;
+    elem.innerHTML = `<b>${period["sIso"]}</b> <b>${period["eIso"]}</b>`;
+    if (period["icon"]){elem.innerHTML = elem.innerHTML + `<span class="icon">${period["icon"]}</span>`; }
+    elem.innerHTML = elem.innerHTML + ` ${period["title"]}`;
     if (period["className"]){ elem.className = elem.className + " " + period["className"]; }
     if (period["color"]){ elem.style.color = period["color"]; }
     if (period["backgroundColor"]){ elem.style.backgroundColor = period["backgroundColor"]; }
@@ -242,10 +244,11 @@ function makeLifeCalendar(calendar, options) {
         var className = item["className"] || null;
         var color = item["color"] || null;
         var backgroundColor = item["backgroundColor"] || null;
+        var icon = item["icon"] || null;
         periods.push({"start": sDate, "end": eDate,
           "sIso": dateToIsoString(sDate), "eIso": dateToIsoString(eDate),
           "title": title, "color": color, "backgroundColor": backgroundColor, 
-          "className": className})
+          "icon": icon, "className": className})
       }
     })
   }
@@ -292,16 +295,20 @@ function makeLifeCalendar(calendar, options) {
     // Periods
     var bgcolor = null;
     var stclass = null;
+    var innerHTML = null;
     periods.forEach(period => {
       if ( !(dateEnd<=period["start"] || dateStart>=period["end"]) ) {
         info["periods"].push(period);
+        if (period["icon"] && innerHTML===null){ innerHTML = period["icon"]; }
         if (period["backgroundColor"] && bgcolor===null){ bgcolor = period["backgroundColor"]; }
         if (period["className"] && stclass===null){ stclass = period["className"]; }
       }
     });
+    if (innerHTML){ itemspan.innerHTML = innerHTML; }
     if (bgcolor){ item.style.backgroundColor = bgcolor; }
     if (stclass){ item.classList.add(stclass) }
 
+  
     itemspan.infoObj = info;
     itemspan.onmouseover = itemMouseOver;
     itemspan.onmouseout  = itemMouseOut;
