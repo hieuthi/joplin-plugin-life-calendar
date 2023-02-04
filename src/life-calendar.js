@@ -278,6 +278,8 @@ function makeLifeCalendar(calendar, options) {
     } else {
       item.className = 'life-item future';
     }
+    // innerHTML is set by event if available, else by period
+    var innerHTML = null;
     // Prepare info events
     if (events[i]){
       var event = events[i][0]; 
@@ -286,7 +288,7 @@ function makeLifeCalendar(calendar, options) {
           event = item;
         }
       })
-      itemspan.innerHTML = event["icon"] || event["title"][0];
+      innerHTML = event["icon"] || event["title"][0];
       if (event["className"]){ itemspan.className = event["className"]; }
       if (event["color"]){ itemspan.style.color = event["color"]; }
       if (event["backgroundColor"]){ itemspan.style.backgroundColor = event["backgroundColor"]; }
@@ -295,7 +297,6 @@ function makeLifeCalendar(calendar, options) {
     // Periods
     var bgcolor = null;
     var stclass = null;
-    var innerHTML = null;
     periods.forEach(period => {
       if ( !(dateEnd<=period["start"] || dateStart>=period["end"]) ) {
         info["periods"].push(period);
@@ -304,11 +305,11 @@ function makeLifeCalendar(calendar, options) {
         if (period["className"] && stclass===null){ stclass = period["className"]; }
       }
     });
-    if (innerHTML){ itemspan.innerHTML = innerHTML; }
     if (bgcolor){ item.style.backgroundColor = bgcolor; }
     if (stclass){ item.classList.add(stclass) }
+    if (innerHTML){ itemspan.innerHTML = innerHTML; }
 
-  
+
     itemspan.infoObj = info;
     itemspan.onmouseover = itemMouseOver;
     itemspan.onmouseout  = itemMouseOut;
