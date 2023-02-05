@@ -25,7 +25,7 @@ This plugin also support periods which is a span of time instead of a point in t
     title:               # (required) event title
     className:           # (optional) css class of the event (color, background-color, etc.)
     color:               # (optional) overwrite color
-    icon:                # (optional) event icon
+    icon:                # (optional) period icon
     backgroundColor:     # (optional) overwrite background-color
 ```
 
@@ -86,6 +86,10 @@ events:
     icon : 👶
     backgroundColor: transparent
 periods:
+  - start: 2022-09-19
+    end  : 2022-11-05
+    title: Sunny
+    icon : 🌤
   - start: 2022-02-16
     end  : 2022-08-16
     title: Advanced Magic Course

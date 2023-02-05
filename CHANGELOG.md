@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.4.1] - 2023-02-05
+### Added
+- Add icon support for period @shubhamjain0594
+
 ## [v1.4.0] - 2022-12-23
 ### Changed
 - Change period end date intepretation to inclusive 
@@ -37,8 +41,9 @@
 ## [v1.0.0] - 2022-02-05
 Initial release, fully functional
 
-[v1.4.0]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.4.0...v1.3.0
-[v1.3.0]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.3.0...v1.2.1
-[v1.2.1]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.2.1...v1.1.0
-[v1.1.0]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.1.0...v1.0.0
+[v1.4.1]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.4.0...v1.4.1
+[v1.4.0]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.3.0...v1.4.0
+[v1.3.0]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.2.1...v1.3.0
+[v1.2.1]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.1.0...v1.2.1
+[v1.1.0]: https://github.com/hieuthi/joplin-plugin-life-calendar/compare/v1.0.0...v1.1.0
 [v1.0.0]: https://github.com/hieuthi/joplin-plugin-life-calendar/releases/tag/v1.0.0

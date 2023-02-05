@@ -61,7 +61,7 @@ function renderInfo(infoElement, info) {
     var elem = document.createElement("div");
     elem.className = 'info-period';
     elem.innerHTML = `<b>${period["sIso"]}</b> <b>${period["eIso"]}</b>`;
-    if (period["icon"]){elem.innerHTML = elem.innerHTML + `<span class="icon">${period["icon"]}</span>`; }
+    if (period["icon"]){elem.innerHTML = elem.innerHTML + ` <span class="icon">${period["icon"]}</span>`; }
     elem.innerHTML = elem.innerHTML + ` ${period["title"]}`;
     if (period["className"]){ elem.className = elem.className + " " + period["className"]; }
     if (period["color"]){ elem.style.color = period["color"]; }
@@ -278,8 +278,8 @@ function makeLifeCalendar(calendar, options) {
     } else {
       item.className = 'life-item future';
     }
-    // innerHTML is set by event if available, else by period
-    var innerHTML = null;
+    // itemIcon is set by event if available, else by period
+    var itemIcon = null;
     // Prepare info events
     if (events[i]){
       var event = events[i][0]; 
@@ -288,7 +288,7 @@ function makeLifeCalendar(calendar, options) {
           event = item;
         }
       })
-      innerHTML = event["icon"] || event["title"][0];
+      itemIcon = event["icon"] || event["title"][0];
       if (event["className"]){ itemspan.className = event["className"]; }
       if (event["color"]){ itemspan.style.color = event["color"]; }
       if (event["backgroundColor"]){ itemspan.style.backgroundColor = event["backgroundColor"]; }
@@ -300,16 +300,15 @@ function makeLifeCalendar(calendar, options) {
     periods.forEach(period => {
       if ( !(dateEnd<=period["start"] || dateStart>=period["end"]) ) {
         info["periods"].push(period);
-        if (period["icon"] && innerHTML===null){ innerHTML = period["icon"]; }
+        if (period["icon"] && itemIcon===null){ itemIcon = period["icon"]; }
         if (period["backgroundColor"] && bgcolor===null){ bgcolor = period["backgroundColor"]; }
         if (period["className"] && stclass===null){ stclass = period["className"]; }
       }
     });
     if (bgcolor){ item.style.backgroundColor = bgcolor; }
     if (stclass){ item.classList.add(stclass) }
-    if (innerHTML){ itemspan.innerHTML = innerHTML; }
 
-
+    itemspan.innerHTML = itemIcon || "";
     itemspan.infoObj = info;
     itemspan.onmouseover = itemMouseOver;
     itemspan.onmouseout  = itemMouseOut;
