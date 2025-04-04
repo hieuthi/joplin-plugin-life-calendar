@@ -8,5 +8,6 @@
 	"author": "Hieu-Thi Luong",
 	"homepage_url": "https://github.com/hieuthi/joplin-plugin-life-calendar",
 	"repository_url": "https://github.com/hieuthi/joplin-plugin-life-calendar",
-	"keywords": ["joplin-plugin", "life calendar", "week calendar", "life", "timeline"]
+	"keywords": ["joplin-plugin", "life calendar", "week calendar", "life", "timeline"],
+	"platforms": ["desktop", "mobile"]
 }
